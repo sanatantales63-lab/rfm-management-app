@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { currency } from "@/lib/utils";
-import { ClientDetailActions } from "@/app/(app)/clients/[id]/client-detail-actions";
+import { ClientDetailActions } from "./client-detail-actions";
 import { deleteClientRecord, getClientById } from "@/services/clients";
 import type { Client } from "@/types";
 

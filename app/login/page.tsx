@@ -1,2 +1,12 @@
+import { Suspense } from "react";
 import { LoginForm } from "@/features/auth/login-form";
-export default function Page(){return <LoginForm/>}
+
+export const dynamic = "force-dynamic";
+
+export default function Page() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
+  );
+}
