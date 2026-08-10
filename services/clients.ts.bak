@@ -1,0 +1,110 @@
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
+import type { Client } from "@/types";
+
+const TABLE = "client_registrations";
+
+export function mapSupabaseClient(row: any): Client {
+  const bride = row.bride_name || "";
+  const groom = row.groom_name || "";
+  const brideFirst = bride.split(" ")[0];
+  const groomFirst = groom.split(" ")[0];
+  const initials = `${brideFirst[0] ?? "?"}${groomFirst[0] ?? "?"}`.toUpperCase();
+
+  const name = bride && groom ? `${bride} & ${groom}` : (row.full_name || row.client_name || `Client #${row.id}`);
+
+  return {
+    id: String(row.id),
+    initials,
+    clientName: name,
+    brideName: bride,
+    groomName: groom,
+    email: row.email || "",
+    phone: row.phone || "",
+    weddingDate: row.wedding_date || "",
+    location: row.venue || row.city || row.location || "Venue TBD",
+    packageName: row.package_choice || row.package_name || "Essential",
+    price: Number(row.price || 0),
+    status: row.status || "planning",
+    portalCode: row.owner_token || row.portal_code || String(row.id),
+    notes: row.message || row.notes || "",
+    dressCode: row.dress_code || undefined,
+    timeline: Array.isArray(row.events)
+      ? row.events.map((ev: string) => ({ title: ev, date: row.wedding_date || "TBD", type: "event" as const }))
+      : [{ title: "Wedding ceremony", date: row.wedding_date || "TBD", type: "event" as const }],
+  };
+}
+
+export async function getClients(): Promise<Client[]> {
+  if (!isSupabaseConfigured()) return [];
+  try {
+    const db = createClient();
+    const { data, error } = await db.from(TABLE).select("*").order("created_at", { ascending: false });
+    if (error || !data) return [];
+    return data.map(mapSupabaseClient);
+  } catch {
+    return [];
+  }
+}
+
+export async function getClientById(id: string): Promise<Client | null> {
+  if (!isSupabaseConfigured()) return null;
+  try {
+    const db = createClient();
+    const { data, error } = await db.from(TABLE).select("*").eq("id", id).maybeSingle();
+    if (error || !data) return null;
+    return mapSupabaseClient(data);
+  } catch {
+    return null;
+  }
+}
+
+export async function createClientRecord(client: {
+  clientName: string;
+  brideName: string;
+  groomName: string;
+  email: string;
+  phone: string;
+  weddingDate: string;
+  packageName: string;
+  price: number;
+  location: string;
+  notes?: string;
+  status?: "planning" | "confirmed" | "completed";
+  dressCode?: string;
+}) {
+  if (!isSupabaseConfigured()) return null;
+  try {
+    const db = createClient();
+    const payload = {
+      bride_name: client.brideName,
+      groom_name: client.groomName,
+      email: client.email,
+      phone: client.phone,
+      wedding_date: client.weddingDate || null,
+      venue: client.location,
+      dress_code: client.dressCode || "",
+      message: client.notes || "",
+      owner_token: "RFM2026",
+    };
+    const { data, error } = await db.from(TABLE).insert([payload]).select().single();
+    if (error) {
+      console.warn("Client registration insert error:", error.message);
+      return null;
+    }
+    return data ? mapSupabaseClient(data) : null;
+  } catch (err) {
+    console.error("createClientRecord exception:", err);
+    return null;
+  }
+}
+
+export async function deleteClientRecord(id: string): Promise<boolean> {
+  if (!isSupabaseConfigured()) return false;
+  try {
+    const db = createClient();
+    await db.from(TABLE).delete().eq("id", id);
+    return true;
+  } catch {
+    return false;
+  }
+}

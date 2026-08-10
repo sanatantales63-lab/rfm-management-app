@@ -1,0 +1,6 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "rfm-wedding-photography-crm",
+  "compatibility_date": "2026-08-07",
+  "pages_build_output_dir": ".next"
+}

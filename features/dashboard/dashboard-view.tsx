@@ -1,0 +1,99 @@
+"use client";
+
+import Link from "next/link";
+import { ArrowRight, CalendarPlus, CheckCircle2, Clock3, MapPin, Plus, Send, UsersRound } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { EditorialImage } from "@/components/editorial-image";
+import { getClients } from "@/services/clients";
+import type { Client } from "@/types";
+
+export function DashboardView() {
+  const [clients, setClients] = useState<Client[]>([]);
+
+  useEffect(() => {
+    getClients().then(setClients).catch(console.error);
+  }, []);
+
+  const stat = [
+    { label: "Active weddings", value: String(clients.length), hint: `${clients.length} in Supabase`, icon: UsersRound },
+    { label: "This month's shoots", value: String(clients.filter(c => c.status === "confirmed").length), hint: "Confirmed dates", icon: CalendarPlus },
+    { label: "Guest responses", value: "0", hint: "0% response rate", icon: Send }
+  ];
+
+  return (
+    <div className="mx-auto max-w-7xl space-y-6 p-5 md:p-8">
+      <section className="relative min-h-[270px] overflow-hidden rounded-3xl bg-ink px-6 py-8 text-white shadow-glow md:px-9">
+        <div className="absolute inset-0 subtle-grid opacity-20"/>
+        <div className="absolute -right-16 -top-20 h-72 w-72 rounded-full bg-champagne/25 blur-3xl"/>
+        <EditorialImage scene="palace" className="absolute bottom-0 right-0 hidden h-full w-[43%] lg:block"/>
+        <div className="absolute bottom-0 right-[39%] hidden h-full w-40 bg-gradient-to-r from-ink via-ink/90 to-transparent lg:block"/>
+        <div className="relative max-w-xl">
+          <p className="eyebrow text-[#e2c399]">Studio Workspace</p>
+          <h1 className="mt-2 font-display text-3xl md:text-4xl">Good morning.</h1>
+          <p className="mt-2 max-w-md text-sm text-white/65">
+            {clients.length === 0
+              ? "Your client dashboard is ready. Create your first client or share your registration link to get started."
+              : `${clients.length} client ${clients.length === 1 ? "story is" : "stories are"} moving forward. Let’s make each detail feel effortless.`
+            }
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link href="/create-client"><Button variant="champagne"><Plus size={16}/>Create client</Button></Link>
+            <Link href="/clients"><Button variant="outline" className="border-white/20 text-white hover:bg-white/10">View all clients <ArrowRight size={15}/></Button></Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="grid gap-4 sm:grid-cols-3">
+        {stat.map(({label,value,hint,icon:Icon})=>(
+          <div key={label} className="surface p-5 transition duration-300 hover:-translate-y-1 hover:shadow-glow">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm text-[hsl(var(--muted-foreground))]">{label}</p>
+                <p className="mt-2 text-3xl font-semibold tracking-tight">{value}</p>
+              </div>
+              <div className="rounded-xl bg-champagne/10 p-2.5 text-champagne">
+                <Icon size={19}/>
+              </div>
+            </div>
+            <p className="mt-4 text-xs font-medium text-emerald-600 dark:text-emerald-400">{hint}</p>
+          </div>
+        ))}
+      </section>
+
+      <section className="surface overflow-hidden">
+        <div className="flex items-center justify-between px-5 pb-3 pt-5">
+          <div>
+            <p className="eyebrow">Relationships</p>
+            <h2 className="mt-1 text-lg font-semibold">Recent clients</h2>
+          </div>
+          <Link href="/clients" className="text-xs font-semibold text-champagne">View all</Link>
+        </div>
+
+        {clients.length === 0 ? (
+          <div className="p-8 text-center text-sm text-[hsl(var(--muted-foreground))]">
+            No recent clients found in Supabase. <Link href="/create-client" className="text-champagne font-semibold underline">Create one now</Link>.
+          </div>
+        ) : (
+          <div className="grid divide-y md:grid-cols-3 md:divide-x md:divide-y-0">
+            {clients.slice(0,3).map(c=>(
+              <Link className="flex items-center gap-3 p-5 hover:bg-[hsl(var(--muted))]" href={`/clients/${c.id}`} key={c.id}>
+                <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#e9d6c1] text-xs font-bold text-[#795636]">
+                  {c.initials}
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold">{c.clientName}</p>
+                  <p className="mt-1 flex items-center gap-1 text-xs text-[hsl(var(--muted-foreground))]">
+                    <CheckCircle2 size={12} className="text-emerald-500"/>
+                    {c.weddingDate || "TBD"}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}

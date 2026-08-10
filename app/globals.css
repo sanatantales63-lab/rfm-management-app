@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root { --background: 40 33% 98%; --foreground: 24 12% 13%; --card: 0 0% 100%; --muted: 30 14% 94%; --muted-foreground: 25 6% 45%; --border: 30 12% 90%; }
+  .dark { --background: 24 13% 9%; --foreground: 36 24% 94%; --card: 24 12% 12%; --muted: 24 10% 17%; --muted-foreground: 30 10% 64%; --border: 24 10% 22%; }
+  * { @apply border-[hsl(var(--border))]; }
+  body { @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))] antialiased; }
+}
+
+@layer components {
+  .surface { @apply rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-soft; }
+  .eyebrow { @apply text-[10px] font-bold uppercase tracking-[.18em] text-champagne; }
+  .subtle-grid { background-image: linear-gradient(hsl(var(--border)/.35) 1px,transparent 1px),linear-gradient(90deg,hsl(var(--border)/.35) 1px,transparent 1px); background-size: 32px 32px; }
+}

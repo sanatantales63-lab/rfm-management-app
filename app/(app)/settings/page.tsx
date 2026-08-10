@@ -1,0 +1,2 @@
+import { Brand } from "@/components/brand";
+export default function Page(){return <div className="mx-auto max-w-3xl p-5 md:p-8"><p className="eyebrow">Workspace</p><h1 className="mt-1 font-display text-3xl">Settings</h1><section className="surface mt-7 p-6"><Brand/><h2 className="mt-5 text-lg font-semibold">RFM Wedding Photography</h2><p className="mt-2 text-sm text-[hsl(var(--muted-foreground))]">Your studio workspace is ready for the next story.</p></section></div>}
