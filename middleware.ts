@@ -6,17 +6,6 @@ type CookieChange = { name: string; value: string; options?: Parameters<ReturnTy
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // ACCESS PAUSE GATE
-  // To resume normal CRM access: set CRM_ACCESS_PAUSED=false in .env.local
-  // then restart the server. No data is modified — this is display-only.
-  // ─────────────────────────────────────────────────────────────────────────
-  if (process.env.CRM_ACCESS_PAUSED === "true" && pathname !== "/paused") {
-    const pauseUrl = request.nextUrl.clone();
-    pauseUrl.pathname = "/paused";
-    return NextResponse.redirect(pauseUrl);
-  }
   if (publicPrefixes.some((prefix) => pathname === prefix || pathname.startsWith(prefix))) return NextResponse.next();
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
