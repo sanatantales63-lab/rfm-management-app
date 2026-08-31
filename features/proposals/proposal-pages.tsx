@@ -1282,13 +1282,13 @@ export function ProposalPublicPage({ proposal }: { proposal: Proposal }) {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.55, duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-            className="prop-serif leading-[0.88] tracking-tight"
+            className="prop-serif leading-none tracking-tight"
             style={{ fontSize: "clamp(3rem, 10vw, 8rem)", color: m.text, fontWeight: 300 }}
           >
             {proposal.bride_name}
             <br />
-            <span className="gold-shimmer italic" style={{ fontSize: "clamp(1.4rem, 4vw, 2.8rem)", display: "block", margin: "0.15em 0", letterSpacing: "0.12em" }}>
-              &amp; together
+            <span className="gold-shimmer italic" style={{ fontSize: "clamp(1.4rem, 4vw, 2.8rem)", display: "block", margin: "0.4em 0", letterSpacing: "0.12em" }}>
+              &amp;
             </span>
             {proposal.groom_name}
           </motion.h1>
@@ -1297,7 +1297,7 @@ export function ProposalPublicPage({ proposal }: { proposal: Proposal }) {
             initial={{ opacity: 0, scaleX: 0 }}
             animate={{ opacity: 1, scaleX: 1 }}
             transition={{ delay: 1, duration: 0.8 }}
-            className="mx-auto my-5 flex items-center gap-6 max-w-[200px]"
+            className="mx-auto my-5 md:mt-10 flex items-center gap-6 max-w-[200px]"
           >
             <div className="h-px flex-1" style={{ background: `rgba(${m.accentRgb},0.3)` }} />
             <Star size={10} style={{ color: m.accent }} />

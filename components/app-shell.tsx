@@ -62,9 +62,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             Appearance
           </button>
           <div className="mt-3 flex items-center gap-2 rounded-xl bg-[hsl(var(--muted))] p-2">
-            <div className="grid h-8 w-8 place-items-center rounded-lg bg-champagne text-xs font-bold text-white">RM</div>
+            <div className="grid h-8 w-8 place-items-center rounded-lg bg-champagne text-[9px] font-bold text-white">RFM</div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-xs font-semibold">Rohan Mehta</p>
+              <p className="truncate text-xs font-semibold">RFM Weddings</p>
               <p className="text-[10px] text-[hsl(var(--muted-foreground))]">Photographer</p>
             </div>
             <ChevronDown size={14} />
