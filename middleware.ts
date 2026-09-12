@@ -1,11 +1,21 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+// ─── PAUSE CONTROL ────────────────────────────────────────────────────────────
+// true  = CRM paused (Paused screen dikhega)
+// false = CRM bilkul normal kaam karega
+// Sirf yeh line badlo aur git push karo — kuch aur nahi karna
+const PAUSE_ACTIVE = true;
+// ─────────────────────────────────────────────────────────────────────────────
+
 const publicPrefixes = ["/login", "/rsvp/", "/invite/", "/register/", "/rsvp-view/", "/p/"];
+
 type CookieChange = { name: string; value: string; options?: Parameters<ReturnType<typeof NextResponse.next>["cookies"]["set"]>[2] };
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  // PAUSE GATE — set PAUSE_ACTIVE=false (line 7) aur git push karo to unpause
+  if (PAUSE_ACTIVE && pathname !== "/paused") { const u = request.nextUrl.clone(); u.pathname = "/paused"; return NextResponse.redirect(u); }
   if (publicPrefixes.some((prefix) => pathname === prefix || pathname.startsWith(prefix))) return NextResponse.next();
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
