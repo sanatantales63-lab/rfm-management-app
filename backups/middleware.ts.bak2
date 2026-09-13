@@ -14,12 +14,8 @@ type CookieChange = { name: string; value: string; options?: Parameters<ReturnTy
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  // PAUSE GATE — set PAUSE_ACTIVE=false (line 8) aur git push karo to unpause
-  // Client-facing routes (client forms, rsvp, invite, proposals) OPEN rahenge
-  // Sirf admin dashboard paused rahega
-  const clientOpenRoutes = ["/client/", "/rsvp/", "/invite/", "/register/", "/rsvp-view/", "/p/", "/paused"];
-  const isClientRoute = clientOpenRoutes.some((r) => pathname === r || pathname.startsWith(r));
-  if (PAUSE_ACTIVE && !isClientRoute) { const u = request.nextUrl.clone(); u.pathname = "/paused"; return NextResponse.redirect(u); }
+  // PAUSE GATE — set PAUSE_ACTIVE=false (line 7) aur git push karo to unpause
+  if (PAUSE_ACTIVE && pathname !== "/paused") { const u = request.nextUrl.clone(); u.pathname = "/paused"; return NextResponse.redirect(u); }
   if (publicPrefixes.some((prefix) => pathname === prefix || pathname.startsWith(prefix))) return NextResponse.next();
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
